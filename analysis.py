@@ -13,14 +13,17 @@ import pandas as pd
 
 CURRENT_YEAR = datetime.datetime.now().year
 
+# hipothesis regarding inflation and interest rates obtained \
+# from boletim focus and historical worst case scenario
+
 h_focus = {
 2016:(6.5, 14.16),
 2017:(4.9, 11.63),
 2018:(4.2, 8.7),
 2019:(4.0, 7.7),
 2020:(4.0, 7.7),
-2021:(4.0, 7.7),  #chute sem referencia
-2022:(4.0, 7.7)   #chute sem referencia
+2021:(4.0, 7.7),  
+2022:(4.0, 7.7)
 }
 
 h_worst = {
@@ -33,10 +36,8 @@ h_worst = {
 2022:6.
 }
 
-# mixes hipothesis and converts data to yearly multipliers,eg. selic at 1.065
-# TODO: do the same to raw hypothesis
 
-# writes selic on worst case
+# copies selic into worst case scenario
 for year in h_worst.keys():
     if type(h_worst[year]) == type(1.):
         h_worst[year] = ( h_worst[year], h_focus[year][1] )
@@ -50,7 +51,7 @@ for year in h_worst.keys():
     h_mix[year] = (ipca, selic)
 
 
-#TODO: projecao de IGPM
+#TODO: IGPM projection
 def calc_interest(x, year):
     ''' returns interest yearly multiplier '''
     ipca, selic = h[year]
@@ -147,15 +148,19 @@ def calc_shape(x):
     else:
         return u'n'
 
+
+
 h = h_mix   #CHOOSE HYPOTHESIS SET <<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# projects years
+# project long term
 for year in range(2016, 2080):
     last_year = h.keys()[-1]
     if year not in h.keys():
         h[year] = h[last_year]
+    
+#   converts data to yearly multipliers,eg. selic at 1.065    
     ipca = h[year][0]
-    h[year] = ( 1. + ipca/100, selic ) # converts into computable format
+    h[year] = ( 1. + ipca/100, selic )
 
 
 con = sqlite3.connect('data.db')
