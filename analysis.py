@@ -81,7 +81,7 @@ def calc_tax(x, acc_bruto):
     return 1. + (acc_bruto - 1. ) * irpf
 
 
-def calc_retorno(x):
+def calc_return(x):
 
     # computes remaining period during current year
     base_date = datetime.date(CURRENT_YEAR, 01, 01)
@@ -171,13 +171,15 @@ df = pd.read_sql_query('SELECT * FROM data WHERE data = "%s";' % date, con)
 
 df['prazo'] = 1. * df['vencimento'] / 365
 df['fgc'] = map( (lambda x: x.lower() in ['cdb','lc','lca','lci'] ), df['tipo'].tolist() )
-df['cagr'], df['limite_fgc'] = zip( *df.apply(calc_retorno, axis=1) )
+df['cagr'], df['limite_fgc'] = zip( *df.apply(calc_return, axis=1) )
 df['prazo'] = 1. * df['prazo'].round(decimals=0) #must be done after calc CAGR
 df['cor'] = df.apply(calc_color, axis=1)
 df['shape'] = df.apply(calc_shape, axis=1)
 
+
+
 # filtering dataframe with sensable investment options 
-df_filtered = df.query('fgc == True ') # & minimo < 20000
+df_filtered = df.query('fgc == True & minimo < 20000' )
 
 df_filtered.plot.scatter(x='prazo', y='cagr', c=df['cor'], \
     s=100*pd.np.log10(df['minimo']+1), ylim=(4, 7.5))
@@ -187,14 +189,16 @@ print 'LEMBRAR DE VERIFICAR SE ESTA NA LISTA DE ASSOCIADOS DA FGC!!'
 
 print df_filtered[['corretora','prazo','indice','cagr','nome']].sort_values('cagr').tail(40)
 
-# gets max CAGR and prints this information
+# computes best option for different time windows and indexes
+
+# gets max CAGR by category
 max_cagr_idxs = df_filtered[['cagr','indice','prazo']].groupby(['indice','prazo']).idxmax()
 max_cagr_idxs = map( (lambda x: x[0]), max_cagr_idxs.values)
 
 max_per_category = df_filtered.iloc[max_cagr_idxs]\
 [['prazo','indice','fgc','cagr','minimo','limite_fgc','corretora','nome',]]\
 .groupby(['prazo','indice']).head()
-# if, IndexError, just go straight to df
+# if any IndexError occurs just go remove the filter on the dataframe
 
 print max_per_category.sort_values(['prazo','indice'])
 print 'LEMBRAR DE VERIFICAR SE ESTA NA LISTA DE ASSOCIADOS DA FGC!!'
