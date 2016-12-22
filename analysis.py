@@ -10,9 +10,6 @@ import sqlite3
 import pandas as pd
 #import matplotlib.pyplot as plt
 
-#fontes:
-#ipca: http://diariodonordeste.verdesmares.com.br/cadernos/negocios/online/mercado-revisa-previsao-do-ipca-de-2018-de-5-40-para-5-20-1.1537553
-#selic: http://epocanegocios.globo.com/Mercado/noticia/2016/04/epoca-negocios-mercado-revisa-ipca-de-2018-de-540-para-520-mostra-pesquisa-focus-do-bc.html
 
 CURRENT_YEAR = datetime.datetime.now().year
 
