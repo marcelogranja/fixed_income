@@ -3,6 +3,12 @@
 Created on Wed May 18 23:02:58 2016
 
 @author: marcelo
+
+hypothesis data sources:
+http://www.bcb.gov.br/pec/GCI/PORT/readout/readout.asp
+https://www.itau.com.br/itaubba-pt/analises-economicas/projecoes/longo-prazo-dezembro-de-2016
+http://www.economiaemdia.com.br/vgn-ext-templating/v/index.jsp?vgnextoid=065098037f782310VgnVCM100000882810acRCRD
+
 """
 
 import datetime
@@ -13,7 +19,7 @@ import pandas as pd
 
 CURRENT_YEAR = datetime.datetime.now().year
 
-# hipothesis regarding inflation and interest rates obtained \
+# hypothesis regarding inflation and interest rates obtained \
 # from boletim focus and historical worst case scenario
 
 h_focus = {
